@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>前端JS正则校验密码</title>
+	<style type="text/css">
+		*{margin: 0;padding: 0}
+	</style>
+</head>
+<body>
+	<script type="text/javascript">
+		/**
+		 * 匹配8-16位，至少有一个大写字母或小写字母，至少有一个数字，至少有一个特殊字符包括-`=\[\];',.~!@#$%^&*()_+|{}:"?
+		 *
+		 * ^是正则表达式匹配字符串开始位置。
+		 * $是正则表达式匹配字符串结束位置。
+		 * ()是为了提取匹配的字符串，表达式中有几个()就有几个相应的匹配字符串。
+		 * []是定义匹配的字符范围，匹配的字符在[]中。
+		 * {}一般用来表示匹配的长度，比如\s{3} 表示匹配三个空格，\s{1,3}表示匹配一到三个空格。
+		 */
+		var arrayList = new ArrayList();
+		arrayList.add("123");
+		arrayList.add("aaa");
+		arrayList.add("AAA");
+		arrayList.add("123a");
+		arrayList.add("123A");
+		arrayList.add("123789aOa");
+		arrayList.add("123789AoA");
+		arrayList.add("123789A $");
+		arrayList.add("123789a $");
+		arrayList.add("123Ao A$");
+		arrayList.add("123aO a$");
+		arrayList.add("123789A$");
+		arrayList.add("123789a$");
+		arrayList.add("123AoA$-");
+		arrayList.add("123aOa$-");
+		arrayList.add("123AoA()$");
+		arrayList.add("1234567a");
+		arrayList.add("aaabbb&&&");
+		arrayList.add("aaabbb&&&1");
+		arrayList.add("123761123&&&");
+		arrayList.add("           ");
+		arrayList.add("    7613&&&");
+		arrayList.add("    7613aa&&&");
+		arrayList.add("    7613AA&&&");
+		arrayList.add("    7613Ss&&&");
+		for (var i = arrayList.size() - 1; i >= 0; i--) {
+			// console.log(arrayList.get(i));
+			checkAction1(arrayList.get(i));
+			checkAction2(arrayList.get(i));
+			console.log("\n");
+			
+		}		
+ 
+ 
+		/**
+		 * 前端正则检验密码 - 必须满足5种情况才ture
+		 * 规则拆分写
+		 */
+		function checkAction1(password){	
+			var upperCaseOrlowerCase = /[a-zA-Z]/;// 判断是否有大写或小写
+			var number = /[0-9]/;// 判断是否有数字
+			var specificSymbol = /[-`=\[\];',.~!@#$%^&*()_+|{}:"?]/;// 判断是否有特殊符号，注意在C#页面中需要两个@@才转义成一个
+			var length=/^.{8,16}$/;// 判断是否长度为8-16位
+			var space=/^\S+$/;// 判断必须非空格
+			var test = upperCaseOrlowerCase.test(password) && specificSymbol.test(password) && number.test(password) && length.test(password) && space.test(password);
+			console.log(test+" ----checkAction1---- "+password);// 输出正则匹配结果
+			
+		}
+ 
+		/**
+		 * 前端正则检验密码
+		 * 规则合并写
+		 */
+		function checkAction2(password){
+			// (?![0-9A-Za-z]+$)意思是不能是纯大写字母的密码，也不能是纯小写字母的密码，也不能是纯数字的密码，也不能是由大写字母和小写字母和数字组合的密码。
+			// (?![-`=\[\];',.~!@#$%^&*()_+|{}:"?]+$)意思是不能是指定的纯特殊字符的密码。
+			// (?![0-9-`=\[\];',.~!@#$%^&*()_+|{}:"?]+$)意思是不能是由指定的纯特殊字符和数字组合的密码。
+			// (?![A-Za-z-`=\[\];',.~!@#$%^&*()_+|{}:"?]+$)意思是不能是由指定的纯特殊字符和大写字母和小写字母组合的密码。
+			// [0-9a-zA-Z-`=\[\];',.~!@#$%^&*()_+|{}:"?]意思是定义字符范围，注意此不包括\s空格字符。
+			// {8,16}意思是定义密码匹配的长度。
+			var regex = /^(?![0-9A-Za-z]+$)(?![-`=\[\];',.~!@#$%^&*()_+|{}:"?]+$)(?![0-9-`=\[\];',.~!@#$%^&*()_+|{}:"?]+$)(?![A-Za-z-`=\[\];',.~!@#$%^&*()_+|{}:"?]+$)[0-9a-zA-Z-`=\[\];',.~!@#$%^&*()_+|{}:"?]{8,16}$/;
+			var test = regex.test(password);
+			console.log(test+" ----checkAction2---- "+password);//输出正则匹配结果
+		}
+ 
+		/**
+		 * JS实现ArrayList
+		 */
+		function ArrayList(){
+		  	this.arr=[],
+		  	this.size=function(){
+		  		return this.arr.length;
+		  	},
+		  	this.add=function(){
+		  		if(arguments.length==1){
+		  			this.arr.push(arguments[0]);
+		  		}else if(arguments.length>=2){
+		  			var deleteItem=this.arr[arguments[0]];
+		  			this.arr.splice(arguments[0],1,arguments[1],deleteItem)
+		  		}
+		  		return this;
+		  	},
+		  	this.get=function(index){
+		  		return this.arr[index];
+		  	},
+		  	this.removeIndex=function(index){
+		  		this.arr.splice(index,1);
+		  	},
+		  	this.removeObj=function(obj){
+		  		this.removeIndex(this.indexOf(obj));
+		  	},
+		  	this.indexOf=function(obj){
+		  		for(var i=0;i<this.arr.length;i++){
+		  			if (this.arr[i]===obj) {
+		  				return i;
+		  			};
+		  		}
+		  		return -1;
+		  	},
+		  	this.isEmpty=function(){
+		  		return this.arr.length==0;
+		  	},
+		  	this.clear=function(){
+		  		this.arr=[];
+		  	},
+		  	this.contains=function(obj){
+		  		return this.indexOf(obj)!=-1;
+		  	} 
+		};
+	</script>
+</body>
+</html>

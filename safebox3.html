@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>前端JS正则校验密码</title>
+	<meta charset="utf-8">
+    <script type="text/javascript" src="./jquery-1.10.2.js"></script>
+    <style type="text/css">.ok{color:lightgreen;}.no{color:red;}.tip p {color: #0c79ba;}</style>
+</head>
+<body>
+	<div class="tip">
+        <div>
+            <p><b>登录密码需满足如下要求：</b><p />
+            <p>需要包含小写字母a...z或者大写字母A...Z <span class="upperCaseOrlowerCase" /></p>
+            <p>需要包含数字0...9 <span class="number" /></p>
+            <p>需要包含至少一位如下特殊字符-`=[];',.~!@#$%^&*()_+|{}:"? <span class="specificSymbol" /></p>
+            <p>密码长度需要在8-16位之间 <span class="length" /></p>
+            <p>两次设置的登录密码保持一致 <span class="confirmPassword" /></p>
+        </div>
+    </div>
+ 
+	<div class="form">
+		<p>
+			<input placeholder="旧密码不能为空！" id="OldPassword" name="OldPassword" type="password" />
+		</p>
+		<p>
+			<input placeholder="新密码不能为空！" id="Password" name="Password" type="password" />
+		</p>
+		<p>
+			<input placeholder="确认密码不能为空！" id="ConfirmPassword" name="ConfirmPassword" type="password" />
+		</p>
+        <p>
+            <input type="button" value="确定" onclick="ChangePassword()" />
+        </p>
+	</div>
+ 
+	<script type="text/javascript">
+        function keyUp(e) {
+            // var currKey=0,e=e||event;
+            // currKey=e.keyCode||e.which||e.charCode;
+            // var keyName = String.fromCharCode(currKey);
+            // console.log("按键码: " + currKey + " 字符: " + keyName);
+            var input = $("#Password").val();
+            var eq = $("#ConfirmPassword").val() == input;
+            if (/^.*[A-Za-z]{1,}.*$/.test(input)) {
+                $(".upperCaseOrlowerCase").html("<span class='ok'>OK</span>");
+            } else {
+                $(".upperCaseOrlowerCase").html("<span class='no'>NO</span>");
+            }
+ 
+            if (/^.*[0-9]{1,}.*$/.test(input)) {
+                $(".number").html("<span class='ok'>OK</span>");
+            } else {
+                $(".number").html("<span class='no'>NO</span>");
+            }
+ 
+            if (/^.*[-`=\[\];',\.~!@@#\$%\^&\*\(\)_\+\|\{\}:\"\?]{1,}.*$/.test(input)) {
+                $(".specificSymbol").html("<span class='ok'>OK</span>");
+            } else {
+                $(".specificSymbol").html("<span class='no'>NO</span>");
+            }
+ 
+            if (input.length >= 8 && input.length <= 16) {
+                $(".length").html("<span class='ok'>OK</span>");
+            } else {
+                $(".length").html("<span class='no'>NO</span>");
+            }
+ 
+            if (!!input && eq) {
+                $(".confirmPassword").html("<span class='ok'>OK</span>");
+            } else {
+                $(".confirmPassword").html("<span class='no'>NO</span>");
+            }
+        }
+ 
+        function keyUpConfirmPassword(e) {
+            var input = $("#Password").val();
+            var eq = $("#ConfirmPassword").val() == input;
+            if (!!input && eq) {
+                $(".confirmPassword").html("<span class='ok'>OK</span>");
+            } else {
+                $(".confirmPassword").html("<span class='no'>NO</span>");
+            }
+        }
+        
+        document.getElementById("Password").onkeyup = keyUp;
+        document.getElementById("ConfirmPassword").onkeyup = keyUpConfirmPassword;
+ 
+        function ChangePassword() {
+            var oldPassword = $("#OldPassword").val();
+            var password = $("#Password").val();
+            var confirmPassword = $("#ConfirmPassword").val();
+            var message = "";
+ 
+            if (password != confirmPassword && password != "") {
+                message = message + "两次输入的密码不相符，请重新输入密码！<br/>";
+                $("#ConfirmPassword").focus();
+            }
+            if (!(password.length >= 8 && password.length <= 16)) {
+                message = "密码长度需要在8-16位之间！<br/>";
+                $("#Password").focus();
+            }
+            if (!(/^.*[-`=\[\];',\.~!@#\$%\^&\*\(\)_\+\|\{\}:\"\?]{1,}.*$/.test(password))) {
+                message = "需要包含至少一位如下特殊字符-`=[];',.~!@#$%^&*()_+|{}:\"?！<br/>";
+                $("#Password").focus();
+            }
+            if (!(/^.*[0-9]{1,}.*$/.test(password))) {
+                message = "需要包含数字0...9！<br/>";
+                $("#Password").focus();
+            }
+            if (!(/^.*[A-Za-z]{1,}.*$/.test(password))) {
+                message = "需要包含小写字母a...z或者大写字母A...Z！<br/>";
+                $("#Password").focus();
+            }
+            if (password.trim() == "") {
+                message = "密码不能为空，请输入密码！<br/>";
+                $("#Password").focus();
+            }
+            if (oldPassword.trim() == "") {
+                message = "请输入旧密码！<br/>";
+                $("#OldPassword").focus();
+            }
+            
+            if (message != "")
+            {
+                alert(message);
+                return false;
+            }
+        }
+	</script>
+</body>
+</html>
